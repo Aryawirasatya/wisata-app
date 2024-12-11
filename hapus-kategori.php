@@ -1,5 +1,6 @@
 <?php
 require_once "function.php";
+if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
 
 // Jika ada id kategori yang ingin dihapus
 if (isset($_GET['id'])) {

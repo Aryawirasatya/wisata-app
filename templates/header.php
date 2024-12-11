@@ -15,7 +15,7 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Demo : Dashboard - Analytics | sneat - Bootstrap Dashboard PRO</title>
+    <title>wisata</title>
 
     <meta name="description" content="" />
 
@@ -55,9 +55,10 @@
         <div class="layout-container">
             <!-- Menu -->
 
-            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+            <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" style="width: 200px;">
+
                 <div class="app-brand demo">
-                    <a href="index.html" class="app-brand-link">
+                    <a href="index.php" class="app-brand-link">
                         <span class="app-brand-logo demo">
                             <svg
                                 width="25"
@@ -107,7 +108,7 @@
                                 </g>
                             </svg>
                         </span>
-                        <span class="app-brand-text demo menu-text fw-bold ms-2">sneat</span>
+                        <span class="logo">wisata</span>
                     </a>
 
                     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -118,73 +119,79 @@
                 <div class="menu-inner-shadow"></div>
 
                 <ul class="menu-inner py-1">
-                    <!-- Dashboards -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-home-smile"></i>
-                            <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="index.php" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Analytics">Home</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class='menu-icon bx bxs-tree-alt'></i>
-                            <div class="text-truncate" data-i18n="Dashboards">Wisata</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="wisata.php" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Analytics">Home</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-money"></i>
-                            <div class="text-truncate" data-i18n="Dashboards">Transaksi</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="create-transaksi.php" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Analytics">Create</div>
-                                </a>
-                                <a href="index.php" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Analytics">Home</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bx-user"></i>
-                            <div class="text-truncate" data-i18n="Dashboards">Users</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="users.php" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Analytics">Home</div>
-                                </a>
-                            </li>
-                        </ul>
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons bx bxs-report  "></i>
-                            <div class="text-truncate" data-i18n="Dashboards">Laporan</div>
-                        </a>
-                        <ul class="menu-sub">
-                            <li class="menu-item">
-                                <a href="laporan.php" class="menu-link">
-                                    <div class="text-truncate" data-i18n="Analytics">Home</div>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </aside>
+                    
+    <!-- Dashboards -->
+    
+    <!-- Dashboards -->
+    <li class="menu-item">
+        <a href="index.php" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-home-smile"></i>
+        <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
+    </a>
+</li>
+
+<!-- Wisata -->
+<li class="menu-item">
+    <a href="wisata.php" class="menu-link">
+        <i class='menu-icon bx bxs-tree-alt'></i>
+        <div class="text-truncate" data-i18n="Dashboards">Wisata</div>
+    </a>
+</li>
+
+<!-- Transaksi -->
+
+<?php if ($_SESSION['role'] == "user") : ?>
+        <li class="menu-item">
+            <a href="create-transaksi.php" class="menu-link">
+                <div class="menu-icon tf-icons bx bx-money"></div>
+                <div class="text-truncate" data-i18n="Pesan">Pesan</div>
+            </a>
+        </li>
+
+        <li class="menu-item">
+            <a href="status-transaksi.php" class="menu-link">
+                <div class="menu-icon tf-icons bx bx-list-check"></div>
+                <div class="text-truncate" data-i18n="Analytics">Status Pesanan</div>
+            </a>
+        </li>
+<?php endif; ?>
+
+
+
+    <?php if ($_SESSION['role'] == "admin") : ?>
+        
+        <li class="menu-item">
+            <a href="users.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-user"></i>
+                <div class="text-truncate" data-i18n="Dashboards">Users</div>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a href="transaksi.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-money"></i>
+                <div class="text-truncate" data-i18n="Dashboards">pesan tiket</div>
+            </a>
+        </li>
+        
+        <li class="menu-item">
+        <a href="laporan.php" class="menu-link">
+            <i class="menu-icon tf-icons bx bxs-report"></i>
+            <div class="text-truncate" data-i18n="Dashboards">Laporan</div>
+        </a>
+    </li>
+
+    
+    
+    
+    
+    <?php endif; ?>
+    <!-- Logout -->
+    <li class="menu-item">
+        <a href="logout.php" class="menu-link">
+            <i class='menu-icon bx bx-log-out'></i>
+            <div class="text-truncate" data-i18n="Logout">Logout</div>
+        </a>
+    </li>
+</ul>
+
+        </aside>

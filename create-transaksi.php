@@ -7,11 +7,14 @@ require_once 'function.php';
 if (isset($_POST['submit_transaksi'])) {
     // Memanggil fungsi tambah_transaksi dan mengirimkan data
     if (tambah_transaksi($_POST)) {
-        echo "<script>alert('Transaksi berhasil disimpan!'); window.location='transaksi.php';</script>";
+        echo "<script>alert('Transaksi berhasil disimpan!'); window.location='status-transaksi.php';</script>";
     } else {
         echo "<script>alert('Terjadi kesalahan saat menyimpan transaksi.');</script>";
     }
 }
+
+if ($_SESSION['role'] != "user") { header("Location: index.php"); exit; }
+
 
 // Ambil data wisata untuk dropdown
 $data_wisata = query("SELECT * FROM wisata");
@@ -23,7 +26,7 @@ include_once 'templates/header.php';
 <!-- Halaman Tambah Transaksi -->
 <div class="layout-page mt-5">
     <div class="container">
-        <h2 class="mb-4 text-center">Tambah Transaksi</h2>
+        <h2 class="mb-4 text-center">buat pesanan</h2>
 
         <!-- Form Tambah Transaksi -->
         <form action="" method="POST">
@@ -37,24 +40,29 @@ include_once 'templates/header.php';
                     <?php endforeach; ?>
                 </select>
             </div>
-
+<br>
             <!-- Input untuk jumlah tiket -->
             <div class="form-group">
                 <label for="jumlah_tiket">Jumlah Tiket</label>
                 <input type="number" class="form-control" id="jumlah_tiket" name="jumlah_tiket" required min="1" oninput="updateHarga()">
             </div>
+            <br>
 
             <!-- Input untuk tanggal pemesanan -->
+   
             <div class="form-group">
                 <label for="tanggal_pemesanan">Tanggal Pemesanan</label>
-                <input type="date" class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" required>
+                <input type="date" class="form-control" id="tanggal_pemesanan" name="tanggal_pemesanan" value="<?php echo date('Y-m-d'); ?>" readonly>
             </div>
+
+            <br>
 
             <!-- Input untuk total harga -->
             <div class="form-group">
                 <label for="total_harga">Total Harga</label>
                 <input type="number" class="form-control" id="total_harga" name="total_harga" required step="0.01" readonly>
             </div>
+            <br>
 
             <!-- Submit button -->
             <button type="submit" name="submit_transaksi" class="btn btn-primary btn-block">Simpan Transaksi</button>

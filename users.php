@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Memeriksa apakah pengguna sudah login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
 require_once 'function.php';
 
 // Menambahkan include untuk header
@@ -6,6 +14,7 @@ include_once 'templates/header.php';
 
 // Memanggil fungsi tampilkan_users untuk mengambil data user
 $users = query("SELECT * FROM users");
+
 ?>
 
 <!-- Halaman Daftar Users -->
@@ -39,9 +48,9 @@ $users = query("SELECT * FROM users");
                         <td><?= $user['created_at'] ?></td>
                         <td>
                             <a href="hapus-users.php?id=<?= $user['id'] ?>"
-                               class="btn btn-danger"
+                               class="btn btn-danger "
                                onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">Hapus</a>
-                            <a class="btn btn-success" href="edit-users.php?id=<?= $user['id'] ?>">Ubah</a>
+                            <a class="btn btn-success mt-5" href="edit-users.php?id=<?= $user['id'] ?>">Ubah</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

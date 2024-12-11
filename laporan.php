@@ -1,13 +1,15 @@
 <?php
 session_start();
-require_once 'koneksi.php';
-require_once 'function.php';
 
 // Memeriksa apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
+
+require_once 'koneksi.php';
+require_once 'function.php';
 
 include_once 'templates/header.php';
 
@@ -34,6 +36,7 @@ if (isset($_POST['tampilkan'])) {
         ORDER BY t.tanggal_pemesanan DESC
     ");
 }  
+
 ?>
 
 <!-- Dashboard Page -->
@@ -103,15 +106,13 @@ if (isset($_POST['tampilkan'])) {
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>tanggal pemesanan</th>
-                            <th> jumlah tiket</th>
-                            <th>total harga</th>
-                            <th>status</th>
-                            <th>tanggal dibuat</th>
-
-
-
+                            <th>Tanggal Pemesanan</th>
+                            <th>Jumlah Tiket</th>
+                            <th>Total Harga</th>
+                            <th>Status</th>
+                            <th>Tanggal Dibuat</th>
                         </tr>
+                    </thead>
                     <tbody>
                         <?php
                         // Penomoran auto-increment  
@@ -125,11 +126,9 @@ if (isset($_POST['tampilkan'])) {
                                 <td><?= $data['total_harga'] ?></td>
                                 <td><?= $data['status'] ?></td>
                                 <td><?= $data['created_at'] ?></td>
- <!-- Menampilkan nama tempat -->
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
-                    </thead>
                 </table>
             </div>
         </div>

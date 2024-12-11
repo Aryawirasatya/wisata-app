@@ -7,96 +7,166 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-include_once 'templates/header.php';
+// Menyertakan file fungsi yang diperlukan
+require_once 'function.php';
+require_once 'templates/header.php';
 
-// Mengambil data pengguna
-$user_id = $_SESSION['user_id'];
-$username = $_SESSION['username'];
+// Mengambil peran pengguna dari sesi
 $role = $_SESSION['role'];
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Pengguna';
 
-// Data dummy untuk dashboard
-$total_wisata = 10; // Total tempat wisata
-$total_pelanggan = 150; // Total pelanggan
-$total_keuntungan = 5000000; // Total keuntungan (dalam Rupiah)
-$chart_data = [100, 200, 150, 300, 250]; // Data dummy untuk chart
+// Mengambil data untuk dashboard admin
+if ($role == "admin") {
+    // Menghitung total tiket terjual dan total keuntungan
+    $total_tiket = query("SELECT SUM(jumlah_tiket) as total_tiket FROM transaksi")[0]['total_tiket'];
+    $total_keuntungan = query("SELECT SUM(total_harga) as total_keuntungan FROM transaksi")[0]['total_keuntungan'];
+
+    // Mengambil data tiket yang paling sering dibeli
+    $tiket_populer = query("SELECT wisata.nama_tempat, SUM(transaksi.jumlah_tiket) as jumlah_terjual 
+                            FROM transaksi 
+                            JOIN wisata ON transaksi.wisata_id = wisata.id 
+                            GROUP BY wisata_id 
+                            ORDER BY jumlah_terjual DESC 
+                            LIMIT 1")[0];
+
+    // Mengambil data penjualan untuk grafik
+    $data_penjualan = query("SELECT DATE(tanggal_pemesanan) as tanggal, SUM(total_harga) as total 
+                             FROM transaksi 
+                             GROUP BY DATE(tanggal_pemesanan)");
+}
+
 
 ?>
 
-<!-- Dashboard Page -->
-<div class="layout-page mt-5">
-    <div class="container">
-        <h2>Welcome, <?= $username ?>!</h2>
-        <p>Role: <?= $role ?></p>
-        
-        <!-- Statistik -->
-        <div class="row mt-4">
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Jumlah Wisata</h5>
-                        <p class="card-text"><?= $total_wisata ?></p>
+<div class="container-fluid mt-5 wrapper">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="col-md-1 col-lg-1 bg-light">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.php">
+                            <span data-feather="home"></span>
+                            Dashboard
+                        </a>
+                    </li>
+                    <!-- Tambahkan link lainnya di sini -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-10 ms-sm-auto col-lg-10 px-md-4">
+
+
+            <!-- Admin Dashboard -->
+            <?php if ($role == "admin"): ?>
+                <div class="row g-4">
+                    <!-- Total Tiket Terjual -->
+                    <div class="col-md-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total Tiket Terjual</h5>
+                                <p class="display-4"><?= $total_tiket ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Total Keuntungan -->
+                    <div class="col-md-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total Keuntungan</h5>
+                                <p class="display-4">Rp <?= number_format($total_keuntungan, 0, ',', '.') ?></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tiket Paling Populer -->
+                    <div class="col-md-4">
+                        <div class="card shadow h-100">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Tiket Paling Populer</h5>
+                                <p class="lead"><?= $tiket_populer['nama_tempat'] ?></p>
+                                <p>Terjual: <?= $tiket_populer['jumlah_terjual'] ?> tiket</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Jumlah Pelanggan</h5>
-                        <p class="card-text"><?= $total_pelanggan ?></p>
+
+                <!-- Grafik Penjualan -->
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card shadow h-100">
+                            <div class="card-body">
+                                <h5 class="card-title text-center">Grafik Penjualan</h5>
+                                <canvas id="grafikPenjualan"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Keuntungan</h5>
-                        <p class="card-text">Rp <?= number_format($total_keuntungan, 0, ',', '.') ?></p>
-                    </div>
-                </div>
-            </div>
+            <?php endif; ?>
+
+            <!-- User Dashboard -->
+            <?php if ($role == "user"): ?>
+    <div class="container-fluid py-5">
+        <div class="text-center mb-5">
+            <!-- Sambutan -->
+        <div class="text-center mb-5 border-bottom">
+            <h1 class="h2">Selamat Datang, <?= htmlspecialchars($username); ?>!</h1>
+            <p class="lead">Kami senang melihat Anda kembali.</p>
         </div>
 
-        <!-- Chart -->
-        <div class="card mt-4">
-            <div class="card-header">Grafik Pengunjung</div>
-            <div class="card-body">
-                <canvas id="chartCanvas"></canvas>
-            </div>
+            <h1 class="display-4 text-primary">Selamat Datang di Aplikasi Pemesanan Tiket Wisata!</h1>
+            <p class="lead">Temukan petualangan baru dan buat kenangan tak terlupakan bersama kami.</p>
         </div>
 
-        <a href="logout.php" class="btn btn-danger mt-4">Logout</a>
+
+    </div>
+            <?php endif; ?>
+
+        </main>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    // Data untuk chart
-    const chartData = <?= json_encode($chart_data) ?>;
-    const ctx = document.getElementById('chartCanvas').getContext('2d');
 
-    new Chart(ctx, {
-        type: 'line', // Tipe grafik: line, bar, pie, dll.
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // Label bulan
-            datasets: [{
-                label: 'Pengunjung',
-                data: chartData,
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderWidth: 2
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-            },
-        },
-    });
-</script>
-
+<!-- Footer -->
 <?php
 include_once 'templates/footer.php';
 ?>
+
+<!-- Sertakan script Bootstrap dan jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<?php if ($role == "admin"): ?>
+<!-- Sertakan script Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Data untuk grafik penjualan
+    var ctx = document.getElementById('grafikPenjualan').getContext('2d');
+    var chartData = {
+        labels: [<?= implode(',', array_map(function($d) { return "'" . $d['tanggal'] . "'"; }, $data_penjualan)) ?>],
+        datasets: [{
+            label: 'Penjualan Harian',
+            data: [<?= implode(',', array_map(function($d) { return $d['total']; }, $data_penjualan)) ?>],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+<?php endif; ?>

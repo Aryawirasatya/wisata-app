@@ -1,11 +1,10 @@
 <?php
 require_once 'function.php';
+if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
 
-// Memeriksa apakah ada parameter id yang diterima
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    // Fungsi untuk menghapus user
     if (hapus_users($id) > 0) {
         // Jika user berhasil dihapus
         echo "<script>alert('User berhasil dihapus!'); window.location.href='users.php';</script>";

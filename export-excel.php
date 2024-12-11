@@ -1,4 +1,5 @@
 <?php
+if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
 include 'koneksi.php';
 require 'vendor/autoload.php';
 
@@ -14,7 +15,6 @@ $sheet->setCellValue('C1', 'JUMLAH TIKET');
 $sheet->setCellValue('D1', 'TOTAL HARGA');
 $sheet->setCellValue('E1', 'STATUS');
 $sheet->setCellValue('F1', 'TANGGAL DIBUAT');
-$sheet->setCellValue('G1', 'KEPENTINGAN');
 
 if (isset($_GET['cari'])) {
     $p_awal = $_GET['p_awal'];

@@ -8,6 +8,7 @@ if (isset($_SESSION['user_id'])) {
     exit;
 }
 
+
 // Memeriksa jika form login disubmit
 if (isset($_POST['submit_login'])) {
     $username = htmlspecialchars($_POST['username']);

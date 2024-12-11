@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+// Memeriksa apakah pengguna sudah login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
 require_once 'function.php';
 
 // Menambahkan include untuk header
@@ -42,21 +49,26 @@ $data_transaksi = query("SELECT transaksi.*, wisata.nama_tempat, users.username
                         <td><?= $transaksi['jumlah_tiket'] ?></td>
                         <td><?= $transaksi['total_harga'] ?></td>
                         <td><?= ucfirst($transaksi['status']) ?></td>
-                        <td>
-                            <!-- Form untuk update status transaksi -->
-                            <form action="update-status.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="id" value="<?= $transaksi['id']; ?>">
-                                <select name="status" class="form-control" style="width:auto;">
-                                    <option value="pending" <?= ($transaksi['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
-                                    <option value="confirmed" <?= ($transaksi['status'] == 'confirmed') ? 'selected' : ''; ?>>Confirmed</option>
-                                    <option value="cancelled" <?= ($transaksi['status'] == 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
-                                </select>
-                                <button type="submit" class="btn btn-primary btn-sm">Update</button>
-                            </form>
-                        </td>
+                        <?php if ($_SESSION['role'] === 'admin') : ?>
+                            <td>
+                                <!-- Form untuk update status transaksi -->
+                                <form action="update-status.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="id" value="<?= $transaksi['id']; ?>">
+                                    <select name="status" class="form-control" style="width:auto;">
+                                        <option value="pending" <?= ($transaksi['status'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
+                                        <option value="confirmed" <?= ($transaksi['status'] == 'confirmed') ? 'selected' : ''; ?>>Confirmed</option>
+                                        <option value="cancelled" <?= ($transaksi['status'] == 'cancelled') ? 'selected' : ''; ?>>Cancelled</option>
+                                    </select>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                </form>
+                            </td>
+                        <?php endif; ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
+
+
         </table>
     </div>
 </div>

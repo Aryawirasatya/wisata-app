@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Memeriksa apakah pengguna sudah login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
 require_once 'function.php';
 
 // Menambahkan include untuk header
@@ -21,6 +29,8 @@ if (isset($_POST['submit_edit'])) {
         echo "<script>alert('Terjadi kesalahan saat memperbarui data wisata.');</script>";
     }
 }
+
+
 ?>
 
 <!-- Halaman Edit Wisata -->
@@ -47,7 +57,7 @@ if (isset($_POST['submit_edit'])) {
                 <input type="number" class="form-control" id="harga" name="harga" step="0.01" value="<?= $wisata['harga'] ?>" required>
             </div>
             <div class="form-group">
-                <label for="rating">Rating</label>
+                <label for="rating">Rating rekomendasi</label>
                 <input type="number" class="form-control" id="rating" name="rating" step="0.1" min="1" max="5" value="<?= $wisata['rating'] ?>" required>
             </div>
             <div class="form-group">
@@ -76,7 +86,7 @@ if (isset($_POST['submit_edit'])) {
             <!-- Menambahkan foto_lama sebagai input tersembunyi -->
             <input type="hidden" name="foto_lama" value="<?= $wisata['foto'] ?>"> <!-- Menyimpan foto lama untuk digunakan saat update -->
             <input type="hidden" name="id" value="<?= $wisata['id'] ?>"> <!-- Menyimpan ID untuk update -->
-            <button type="submit" name="submit_edit" class="btn btn-primary btn-block">Simpan</button>
+            <button type="submit" name="submit_edit" class="btn btn-primary btn-block mt-2">Simpan</button>
         </form>
 
     </div>

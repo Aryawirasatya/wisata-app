@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Memeriksa apakah pengguna sudah login
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
 require_once 'function.php';
 
 // Menambahkan include untuk header
@@ -19,6 +27,8 @@ if (isset($_POST['submit_edit_user'])) {
         echo "<script>alert('Terjadi kesalahan saat memperbarui user.');</script>";
     }
 }
+
+
 ?>
 
 <!-- Halaman Edit User -->
@@ -48,6 +58,13 @@ if (isset($_POST['submit_edit_user'])) {
             <div class="form-group">
                 <label for="kontak">Kontak</label>
                 <input type="text" class="form-control" id="kontak" name="kontak" value="<?= $user['kontak']; ?>">
+            </div>
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select class="form-control" id="role" name="role">
+                    <option value="user" <?= $user['role'] == 'user' ? 'selected' : ''; ?>>User</option>
+                    <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : ''; ?>>Admin</option>
+                </select>
             </div>
             <button type="submit" name="submit_edit_user" class="btn btn-primary btn-block">Simpan Perubahan</button>
         </form>

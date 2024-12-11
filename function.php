@@ -110,7 +110,7 @@ function edit_wisata($data) {
     // Cek apakah ada foto yang diupload
     if ($_FILES['foto']['error'] == 0) {
         // Jika ada, upload foto baru
-        $foto = uploadGambar();  // Fungsi upload gambar yang sudah ada
+        $foto = uploadGambar();  // Fungsi upload gambar yang sudah adaA
     } else {
         // Jika tidak ada, gunakan foto lama yang dikirim dari form
         $foto = $data['foto_lama'];
@@ -275,17 +275,28 @@ function edit_user($data) {
     $nama_lengkap = htmlspecialchars($data["nama_lengkap"]);
     $email = htmlspecialchars($data["email"]);
     $kontak = htmlspecialchars($data["kontak"]);
+    $role = htmlspecialchars($data["role"]);
 
     // Jika password diubah, hash password baru
     if (!empty($password)) {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        $query = "UPDATE users SET username = '$username', password = '$hashed_password', 
-                  nama_lengkap = '$nama_lengkap', email = '$email', kontak = '$kontak' 
+        $query = "UPDATE users SET 
+                  username = '$username', 
+                  password = '$hashed_password', 
+                  nama_lengkap = '$nama_lengkap', 
+                  email = '$email', 
+                  kontak = '$kontak', 
+                  role = '$role' 
                   WHERE id = '$id'";
     } else {
         // Jika password kosong, jangan ubah password
-        $query = "UPDATE users SET username = '$username', nama_lengkap = '$nama_lengkap', 
-                  email = '$email', kontak = '$kontak' WHERE id = '$id'";
+        $query = "UPDATE users SET 
+                  username = '$username', 
+                  nama_lengkap = '$nama_lengkap', 
+                  email = '$email', 
+                  kontak = '$kontak', 
+                  role = '$role' 
+                  WHERE id = '$id'";
     }
 
     mysqli_query($koneksi, $query);
@@ -293,5 +304,5 @@ function edit_user($data) {
     return mysqli_affected_rows($koneksi);
 }
 
-
+ 
 ?>

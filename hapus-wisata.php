@@ -1,7 +1,6 @@
 <?php
 
 include_once('function.php');
-if ($_SESSION['role'] != "admin") { header("Location: index.php"); exit; }
 
 // jika ada id
 if (isset($_GET['id'])) {
